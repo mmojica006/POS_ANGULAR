@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="Extensions\" />
+    <Compile Remove="Dtos\**" />
+    <EmbeddedResource Remove="Dtos\**" />
+    <None Remove="Dtos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Persistences\Interfaces\" />
     <Folder Include="Persistences\Repositories\" />
   </ItemGroup>
