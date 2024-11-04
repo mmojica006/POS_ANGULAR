@@ -12,6 +12,7 @@
         /// 
 
        ICategoryRepository Category {  get; }
+        IUserRepository User { get; }
 
         void SaveChanges();
         Task SaveChangesAsync();
