@@ -64,7 +64,7 @@ namespace POS.Infrastructure.Persistences.Repositories
 
         public async Task<Category> CategoryById(int categoryId)
         {
-            var category = await _context.Categories!.AsNoTracking().FirstOrDefaultAsync(x => x.CategoryId.Equals(categoryId));
+            var category = await _context.Categories!.AsNoTracking().FirstOrDefaultAsync(x => x.Id.Equals(categoryId));
             return category!;
         }
 
@@ -93,7 +93,7 @@ namespace POS.Infrastructure.Persistences.Repositories
 
         public async Task<bool> RemoveCategory(int categoryId)
         {
-            var categotory = await _context.Categories.AsNoTracking().SingleOrDefaultAsync(x => x.CategoryId.Equals(categoryId));
+            var categotory = await _context.Categories.AsNoTracking().SingleOrDefaultAsync(x => x.Id.Equals(categoryId));
             categotory!.AuditDeleteUser = 1;
             categotory.AuditDeleteDate = DateTime.Now;
 
