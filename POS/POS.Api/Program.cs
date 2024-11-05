@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+using POS.Api.Extensions;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
 
@@ -12,6 +12,9 @@ var Cors = "Cors";
 
 builder.Services.AddInjectionInfraestructure(Configuration);
 builder.Services.AddInjectionApplication(Configuration);
+
+builder.Services.AddAuthentication(Configuration);
+builder.Services.AddSwagger();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,6 +41,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//Hacer uso de un middleware para hacer la atentication correctamente
+
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
