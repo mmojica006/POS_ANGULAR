@@ -20,7 +20,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         {
             var response = new BaseEntityResponse<Category>();
 
-            var categories = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null);
+            var categories = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null).AsNoTracking();
 
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
             {
