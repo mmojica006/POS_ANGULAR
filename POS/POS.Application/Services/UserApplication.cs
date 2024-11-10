@@ -2,7 +2,7 @@
 using Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using POS.Application.Commons.Bases;
+using POS.Application.Commons.Bases.Response;
 using POS.Application.Dtos.User.Request;
 using POS.Application.Interfaces;
 using POS.Domain.Entities;

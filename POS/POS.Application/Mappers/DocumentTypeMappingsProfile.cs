@@ -9,7 +9,9 @@ namespace POS.Application.Mappers
         public DocumentTypeMappingsProfile()
         {
 
-            CreateMap<DocumentType, DocumentTypeResponseDto>().ReverseMap();
+            CreateMap<DocumentType, DocumentTypeResponseDto>()
+                .ForMember(x=>x.DocumentTypeId, x=>x.MapFrom(y=>y.Id))
+                .ReverseMap();
         }
     }
 }

@@ -2,7 +2,6 @@
 using POS.Application.Dtos.Provider.Request;
 using POS.Application.Dtos.Provider.Response;
 using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases.Response;
 using POS.Utilities.Static;
 
 namespace POS.Application.Mappers
@@ -17,8 +16,6 @@ namespace POS.Application.Mappers
               .ForMember(x => x.StateProvider, x => x.MapFrom(t => t.State.Equals((int)StateTypes.Active) ? "Activo" : "Inactivo"))
               .ReverseMap();
 
-            CreateMap<BaseEntityResponse<Provider>, BaseEntityResponse<ProviderResponseDto>>()
-              .ReverseMap();
 
             CreateMap<ProviderRequestDto, Provider>().ReverseMap();
         }

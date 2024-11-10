@@ -1,12 +1,13 @@
 ﻿using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases;
 using System.Linq.Expressions;
 
 namespace POS.Infrastructure.Persistences.Interfaces
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
+        IQueryable<T> GetAllQueryable();
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetSelectAsync();
         Task<T> GetByIdAsync(int id);
         Task<bool> RegisterAsync(T entity);
         Task<bool> EditAsync(T entity);
@@ -17,6 +18,6 @@ namespace POS.Infrastructure.Persistences.Interfaces
         /// <param name="filter"></param>
         /// <returns></returns>
         IQueryable<T> GetEntityQuery(Expression<Func<T, bool>>? filter = null);
-        IQueryable<TDTO> Ordering<TDTO>(BasePaginationRequest request, IQueryable<TDTO> queryable, bool pagination = false) where TDTO : class;
+        
     }
 }

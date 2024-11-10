@@ -1,4 +1,6 @@
-﻿namespace POS.Infrastructure.Persistences.Interfaces
+﻿using POS.Domain.Entities;
+
+namespace POS.Infrastructure.Persistences.Interfaces
 {
     /// <summary>
     /// Este patrón nos permite manejar transacciones durante la manipulación de datos
@@ -11,10 +13,14 @@
         /// </summary>
         /// 
 
-        ICategoryRepository Category { get; }
+        IGenericRepository<Category> Category { get; }
+        IGenericRepository<Provider> Provider { get; }
+        IGenericRepository<DocumentType> DocumentType { get; }
+
+        //ICategoryRepository Category { get; }
+        //IProviderRepository Provider { get; }
+        //IDocumentTypeRepository DocumentType { get; }
         IUserRepository User { get; }
-        IProviderRepository Provider { get; }
-        IDocumentTypeRepository DocumentType { get; }
 
         void SaveChanges();
         Task SaveChangesAsync();

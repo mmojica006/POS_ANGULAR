@@ -1,12 +1,9 @@
-﻿using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases;
-using POS.Infrastructure.Helpers;
-using POS.Infrastructure.Persistences.Interfaces;
-using System.Linq.Expressions;
-using System.Linq.Dynamic.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Contexts;
+using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
+using System.Linq.Expressions;
 
 namespace POS.Infrastructure.Persistences.Repositories
 {
@@ -20,14 +17,7 @@ namespace POS.Infrastructure.Persistences.Repositories
             _entity = _context.Set<T>(); //seteo de la entidad con el context, asignar set de tipo genérico
         }
 
-        public IQueryable<TDTO> Ordering<TDTO>(BasePaginationRequest request, IQueryable<TDTO> queryable, bool pagination = false) where TDTO : class
-        {
-            IQueryable<TDTO> queryDto = request.Order == "desc" ? queryable.OrderBy($"{request.Sort} descending") : queryable.OrderBy($"{request.Sort} ascending");
-
-            if (pagination) queryDto = queryDto.Paginate(request);
-
-            return queryDto;
-        }
+      
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             var getAll = await _entity
@@ -81,6 +71,19 @@ namespace POS.Infrastructure.Persistences.Repositories
 
             var recordsAffected = await _context.SaveChangesAsync();
             return recordsAffected > 0;
+        }
+
+        public IQueryable<T> GetAllQueryable()
+        {
+            var getAllQuery = GetEntityQuery(x=>x.AuditDeleteUser == null && x.AuditDeleteDate == null);
+            return getAllQuery;
+
+        }
+
+        public async Task<IEnumerable<T>> GetSelectAsync()
+        {
+            var getAll = await _entity.Where(x=>x.State.Equals((int) StateTypes.Active)).AsNoTracking().ToListAsync();
+            return getAll;
         }
     }
 }

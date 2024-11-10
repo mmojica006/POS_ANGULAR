@@ -2,7 +2,6 @@
 using POS.Application.Dtos.Category.Request;
 using POS.Application.Dtos.Category.Response;
 using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases.Response;
 using POS.Utilities.Static;
 
 namespace POS.Application.Mappers
@@ -17,9 +16,6 @@ namespace POS.Application.Mappers
                 .ForMember(x => x.StateCategory, x => x.MapFrom(t => t.State.Equals((int)StateTypes.Active) ? "Activo" : "Inactivo"))
                 .ReverseMap();
 
-            ///
-            CreateMap<BaseEntityResponse<Category>, BaseEntityResponse<CategoryResponseDto>>()
-                .ReverseMap();
 
             //Lo que se necesita a la BD CategoryRequestDto=> Category
             CreateMap<CategoryRequestDto, Category>()

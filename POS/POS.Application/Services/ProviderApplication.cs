@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using POS.Application.Commons.Bases;
+using Microsoft.EntityFrameworkCore;
+using POS.Application.Commons.Bases.Request;
+using POS.Application.Commons.Bases.Response;
+using POS.Application.Commons.Ordering;
 using POS.Application.Dtos.Category.Response;
 using POS.Application.Dtos.Provider.Request;
 using POS.Application.Dtos.Provider.Response;
 using POS.Application.Interfaces;
 using POS.Application.Validators.Category;
 using POS.Domain.Entities;
-using POS.Infrastructure.Commons.Bases.Request;
-using POS.Infrastructure.Commons.Bases.Response;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
 
@@ -18,35 +18,60 @@ namespace POS.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IOrderingQuery _orderingQuery;
         //private readonly ProviderValidator _validationRules;
 
-        public ProviderApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validationRules)
+        public ProviderApplication(IUnitOfWork unitOfWork, IMapper mapper, CategoryValidator validationRules, IOrderingQuery orderingQuery)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _orderingQuery = orderingQuery;
             //_validationRules = validationRules;
         }
 
 
 
-        public async Task<BaseResponse<BaseEntityResponse<ProviderResponseDto>>> ListProviders(BaseFilterRequest filters)
+        public async Task<BaseResponse<IEnumerable<ProviderResponseDto>>> ListProviders(BaseFilterRequest filters)
         {
-            var response = new BaseResponse<BaseEntityResponse<ProviderResponseDto>>();
+            var response = new BaseResponse<IEnumerable<ProviderResponseDto>>();
             try
             {
-                var providers = await _unitOfWork.Provider.ListProviders(filters);
+                var providers = _unitOfWork.Provider.GetAllQueryable().Include(x => x.DocumentType).AsQueryable();
 
-                if (providers is not null)
+                if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
                 {
-                    response.IsSuccess = true;
-                    response.Data = _mapper.Map<BaseEntityResponse<ProviderResponseDto>>(providers);
-                    response.Message = ReplyMessage.MESSAGE_QUERY;
+                    switch (filters.NumFilter)
+                    {
+                        case 1:
+                            providers = providers.Where(x => x.Name!.Contains(filters.TextFilter));
+                            break;
+                        case 2:
+                            providers = providers.Where(x => x.Email!.Contains(filters.TextFilter));
+                            break;
+                        case 3:
+                            providers = providers.Where(x => x.DocumentNumber!.Contains(filters.TextFilter));
+                            break;
+                    }
                 }
-                else
+
+                if (filters.StateFilter is not null)
                 {
-                    response.IsSuccess = false;
-                    response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                    providers = providers.Where(x => x.State.Equals(filters.StateFilter));
                 }
+
+                if (!string.IsNullOrEmpty(filters.StartDate) && !string.IsNullOrEmpty(filters.EndDate))
+                {
+                    providers = providers.Where(x => x.AuditCreateDate >= Convert.ToDateTime(filters.StartDate) && x.AuditCreateDate <= Convert.ToDateTime(filters.EndDate).AddDays(1));
+                }
+
+                if (filters.Sort is null) filters.Sort = "Id";
+                var items = await _orderingQuery.Ordering(filters, providers, !(bool)filters.Download!).ToListAsync(); //Devuelve el resultado ordenado y paginado
+
+                response.IsSuccess = true;
+                response.TotalRecords = await providers.CountAsync();
+                response.Data = _mapper.Map<IEnumerable<ProviderResponseDto>>(items);
+                response.Message = ReplyMessage.MESSAGE_QUERY;
+
             }
             catch (Exception ex)
             {
