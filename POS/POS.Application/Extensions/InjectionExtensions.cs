@@ -22,6 +22,7 @@ namespace POS.Application.Extensions
             services.AddScoped<ICategoryApplication, CategoryApplication>();
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IProviderApplication, ProviderApplication>();
+            services.AddScoped<IDocumentTypeApplication, DocumentTypeApplication>();
             services.AddWatchDog(configuration);
 
 
