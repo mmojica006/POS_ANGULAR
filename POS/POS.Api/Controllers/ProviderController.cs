@@ -3,6 +3,7 @@ using POS.Application.Dtos.Provider.Request;
 using POS.Application.Interfaces;
 using POS.Application.Services;
 using POS.Infrastructure.Commons.Bases.Request;
+using POS.Utilities.Static;
 
 namespace POS.Api.Controllers
 {
@@ -12,15 +13,23 @@ namespace POS.Api.Controllers
     public class ProviderController : ControllerBase
     {
         private readonly IProviderApplication _providerApplication;
-        public ProviderController(IProviderApplication providerApplication)
+        private readonly IGenerateExcelApplication _generateExcelApplication;
+        public ProviderController(IProviderApplication providerApplication, IGenerateExcelApplication generateExcelApplication)
         {
             _providerApplication = providerApplication;
+            _generateExcelApplication = generateExcelApplication;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ListProviders([FromBody] BaseFilterRequest filters)
+        [HttpGet]
+        public async Task<IActionResult> ListProviders([FromQuery] BaseFilterRequest filters)
         {
             var response = await _providerApplication.ListProviders(filters);
+            if ((bool)filters.Download!)
+            {
+                var columnNames = ExcelColumnNames.GetColumnsProviders();
+                var fileBytes = _generateExcelApplication.GenerateToExcel(response.Data!, columnNames);
+                return File(fileBytes, ContentType.ContentTypeExcel);
+            }
             return Ok(response);
         }
 

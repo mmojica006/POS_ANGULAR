@@ -17,12 +17,13 @@ namespace POS.Application.Extensions
             {
                 options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies().Where(p => !p.IsDynamic)); //Inyectando a nivel global los servicios  de fluentValidation
             });
-
+            services.AddScoped<IGenerateExcelApplication, GenerateExcelApplication>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly()); 
             services.AddScoped<ICategoryApplication, CategoryApplication>();
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IProviderApplication, ProviderApplication>();
             services.AddScoped<IDocumentTypeApplication, DocumentTypeApplication>();
+           
             services.AddWatchDog(configuration);
 
 

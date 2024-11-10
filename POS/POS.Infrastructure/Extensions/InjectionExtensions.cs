@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using POS.Infrastructure.FileExcel;
 using POS.Infrastructure.Persistences.Contexts;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Infrastructure.Persistences.Repositories;
@@ -20,6 +21,7 @@ namespace POS.Infrastructure.Extensions
             /*registro de unitofwork como transient */
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddTransient<IGenerateExcel, GenerateExcel>();
 
             return services;
         }
