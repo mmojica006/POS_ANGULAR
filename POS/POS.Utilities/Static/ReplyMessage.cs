@@ -13,5 +13,6 @@
         public const string MESSAGE_VALIDATE = "Errores de validación.";
         public const string MESSAGE_FAILED = "Operación fallida.";
         public const string MESSAGE_TOKEN_ERROR = "El usuario y contraseña es incorrecto, compruebalo.";
+        public const string MESSAGE_EXCEPTION = "Hubo un error inesperado, comunicarse con el administrador. (admin@gmail.com)";
     }
 }

@@ -1,6 +1,7 @@
 using POS.Api.Extensions;
 using POS.Application.Extensions;
 using POS.Infrastructure.Extensions;
+using WatchDog;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -33,7 +34,11 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+
+
 app.UseCors(Cors);
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -41,6 +46,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseWatchDogExceptionLogger();
+
 //Hacer uso de un middleware para hacer la atentication correctamente
 
 app.UseAuthentication();
@@ -50,6 +58,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseWatchDog(configuration =>
+{
+    configuration.WatchPageUsername = Configuration.GetSection("WatchDog:Usermame").Value;
+    configuration.WatchPagePassword = Configuration.GetSection("WatchDog:Password").Value;
+});
 
 app.Run();
 public partial class Program { }

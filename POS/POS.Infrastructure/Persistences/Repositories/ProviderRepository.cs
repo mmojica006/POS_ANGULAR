@@ -19,8 +19,8 @@ namespace POS.Infrastructure.Persistences.Repositories
             var response = new BaseEntityResponse<Provider>();
 
             var providers = GetEntityQuery(x => x.AuditDeleteUser == null && x.AuditDeleteDate == null)
-                .Include(x => x.DocumentType)
-                .AsNoTracking();
+           .Include(x => x.DocumentType)
+           .AsNoTracking();
 
             if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
             {
@@ -48,11 +48,15 @@ namespace POS.Infrastructure.Persistences.Repositories
                 providers = providers.Where(x => x.AuditCreateDate >= Convert.ToDateTime(filters.StartDate) && x.AuditCreateDate <= Convert.ToDateTime(filters.EndDate).AddDays(1));
             }
 
-            if (filters.Sort is null) filters.Sort = "Id";
+            if (filters.Sort is null) filters.Sort = "IdTESTTTT";
 
             response.TotalRecords = await providers.CountAsync();
             response.Items = await Ordering(filters, providers, !(bool)filters.Download!).ToListAsync(); //Devuelve el resultado ordenado y paginado
+
+
+
             return response;
+
 
 
         }
