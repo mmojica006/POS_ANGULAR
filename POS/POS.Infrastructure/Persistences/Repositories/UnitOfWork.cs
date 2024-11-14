@@ -14,6 +14,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IGenericRepository<Provider> _provider = null!;
 
         public IGenericRepository<DocumentType> _documentType = null!;
+        public IWarehouseRepository _warehouse => null!;
 
         public UnitOfWork(POSContext context)
         {
@@ -24,6 +25,7 @@ namespace POS.Infrastructure.Persistences.Repositories
         public IGenericRepository<Provider> Provider => _provider ?? new GenericRepository<Provider>(_context);
         public IGenericRepository<DocumentType> DocumentType => _documentType ?? new GenericRepository<DocumentType>(_context);
         public IUserRepository User => _user ?? new UserRepository(_context);
+        public IWarehouseRepository Warehouse => _warehouse ?? new WarehouseRepository(_context);
 
         /// <summary>
         /// Liberar los recursos en memoria

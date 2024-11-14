@@ -16,11 +16,13 @@ namespace POS.Infrastructure.Persistences.Interfaces
         IGenericRepository<Category> Category { get; }
         IGenericRepository<Provider> Provider { get; }
         IGenericRepository<DocumentType> DocumentType { get; }
+       
 
         //ICategoryRepository Category { get; }
         //IProviderRepository Provider { get; }
         //IDocumentTypeRepository DocumentType { get; }
         IUserRepository User { get; }
+        IWarehouseRepository Warehouse { get; }
 
         void SaveChanges();
         Task SaveChangesAsync();
