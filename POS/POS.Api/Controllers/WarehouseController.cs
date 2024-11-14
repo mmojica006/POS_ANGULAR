@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using POS.Application.Commons.Bases.Request;
+using POS.Application.Dtos.Warehouse.Request;
 using POS.Application.Interfaces;
 using POS.Utilities.Static;
 
@@ -37,6 +38,13 @@ namespace POS.Api.Controllers
         public async Task<IActionResult> WarehouseById(int warehouseId)
         {
             var response = await _warehouseApplication.WarehousesById(warehouseId);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterWarehouse([FromBody] WarehouseRequestDto requestDto)
+        {
+            var response = await _warehouseApplication.Registerwarehouse(requestDto);
             return Ok(response);
         }
     }

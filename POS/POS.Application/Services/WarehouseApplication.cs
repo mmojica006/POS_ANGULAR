@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Ordering;
 using POS.Application.Dtos.Category.Response;
+using POS.Application.Dtos.Warehouse.Request;
 using POS.Application.Dtos.Warehouse.Response;
 using POS.Application.Interfaces;
+using POS.Domain.Entities;
 using POS.Infrastructure.Persistences.Interfaces;
 using POS.Utilities.Static;
 using WatchDog;
@@ -70,6 +73,8 @@ namespace POS.Application.Services
             return response;
         }
 
+      
+
         public async Task<BaseResponse<WarehouseByIdResponseDto>> WarehousesById(int warehouseId)
         {
             var response = new BaseResponse<WarehouseByIdResponseDto>();
@@ -87,6 +92,54 @@ namespace POS.Application.Services
             response.Message = ReplyMessage.MESSAGE_QUERY;
 
             return response;
+        }
+
+        public async Task<BaseResponse<bool>> Registerwarehouse(WarehouseRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+
+            using var transaction = _unitOfWork.BeginTransaction(); 
+            try
+            {
+                var warehouse = _mapper.Map<Warehouse>(requestDto);
+                response.Data = await _unitOfWork.Warehouse.RegisterAsync(warehouse);
+                int warehouseId = warehouse.Id;
+
+                var products = await _unitOfWork.Product.GetAllAsync();
+
+                await RegisterProductStockByalmacen(products, warehouseId);
+
+
+                transaction.Commit();
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_SAVE;
+
+            }
+            catch (Exception ex) {
+                transaction.Rollback();
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+            }
+
+            return response;
+        }
+
+        private async Task RegisterProductStockByalmacen(IEnumerable<Product> products, int warehouseId)
+        {
+            foreach (var product in products) 
+            {
+                var newProductStock = new ProductStock
+                {
+                    ProductId = product.Id,
+                    WarehouseId = warehouseId,
+                    CurrentStock = 0,
+                    PurchasePrice = 0,
+                };
+
+                await _unitOfWork.ProductStock.RegisterProductstock(newProductStock);
+            }
+
         }
     }
 }

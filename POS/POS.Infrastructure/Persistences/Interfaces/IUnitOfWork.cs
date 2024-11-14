@@ -1,4 +1,5 @@
 ﻿using POS.Domain.Entities;
+using System.Data;
 
 namespace POS.Infrastructure.Persistences.Interfaces
 {
@@ -23,8 +24,16 @@ namespace POS.Infrastructure.Persistences.Interfaces
         //IDocumentTypeRepository DocumentType { get; }
         IUserRepository User { get; }
         IWarehouseRepository Warehouse { get; }
+        IGenericRepository<Product> Product { get; }
+        IProductStockRepository ProductStock { get; }
 
         void SaveChanges();
         Task SaveChangesAsync();
+
+        /// <summary>
+        /// Conjunto de operaciones de base de datos que se ejecutan como una unidad atómica
+        /// </summary>
+        /// <returns></returns>
+        IDbTransaction BeginTransaction();
     }
 }
