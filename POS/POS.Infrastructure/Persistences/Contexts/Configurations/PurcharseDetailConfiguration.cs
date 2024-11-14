@@ -10,10 +10,7 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
         {
             builder.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-            builder.HasOne(d => d.Product)
-                .WithMany(p => p.PurcharseDetails)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__Purcharse__Produ__0D7A0286");
+           
 
             builder.HasOne(d => d.Purcharse)
                 .WithMany(p => p.PurcharseDetails)

@@ -8,9 +8,12 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).HasColumnName("ProductId");
+
             builder.Property(e => e.Name).HasMaxLength(50);
 
-            builder.Property(e => e.SellPrice).HasColumnType("decimal(18, 2)");
 
             builder.HasOne(d => d.Category)
                 .WithMany(p => p.Products)
@@ -18,11 +21,7 @@ namespace POS.Infrastructure.Persistences.Contexts.Configurations
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Products__Catego__09A971A2");
 
-            builder.HasOne(d => d.Provider)
-                .WithMany(p => p.Products)
-                .HasForeignKey(d => d.ProviderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Products__Provid__0A9D95DB");
+        
         }
     }
 }
