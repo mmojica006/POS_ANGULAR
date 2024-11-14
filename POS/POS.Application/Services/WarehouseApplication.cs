@@ -29,7 +29,7 @@ namespace POS.Application.Services
             var response = new BaseResponse<IEnumerable<WarehouseResponseDto>>();
             try
             {
-                var warehouses =  _unitOfWork.Warehouse.GetAllQueryable();
+                var warehouses = _unitOfWork.Warehouse.GetAllQueryable();
                 if (filters.NumFilter is not null && !string.IsNullOrEmpty(filters.TextFilter))
                 {
                     switch (filters.NumFilter)
@@ -66,6 +66,25 @@ namespace POS.Application.Services
                 response.Message = ReplyMessage.MESSAGE_EXCEPTION;
                 WatchLogger.Log(ex.Message);
             }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<WarehouseByIdResponseDto>> WarehousesById(int warehouseId)
+        {
+            var response = new BaseResponse<WarehouseByIdResponseDto>();
+            var warehouse = await _unitOfWork.Warehouse.GetByIdAsync(warehouseId);
+            if (warehouse is null)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_QUERY_EMPTY;
+                return response;
+
+            }
+            response.IsSuccess = true;
+            response.Message = ReplyMessage.MESSAGE_QUERY;
+            response.Data = _mapper.Map<WarehouseByIdResponseDto>(warehouse);
+            response.Message = ReplyMessage.MESSAGE_QUERY;
 
             return response;
         }

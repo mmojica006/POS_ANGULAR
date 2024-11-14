@@ -9,10 +9,14 @@ namespace POS.Application.Mappers
     {
         public WarehouseMappingsProfile()
         {
-            CreateMap<Warehouse,WarehouseResponseDto>()
+            CreateMap<Warehouse, WarehouseResponseDto>()
                 .ForMember(x => x.WarehouseId, x => x.MapFrom(y => y.Id))
                 .ForMember(x => x.WarehouseId, x => x.MapFrom(t => t.State.Equals((int)StateTypes.Active) ? "Activo" : "Inactivo"))
                 .ReverseMap();
+
+            CreateMap<Warehouse, WarehouseByIdResponseDto>()
+               .ForMember(x => x.WarehouseId, x => x.MapFrom(y => y.Id))
+              .ReverseMap();
 
         }
     }
