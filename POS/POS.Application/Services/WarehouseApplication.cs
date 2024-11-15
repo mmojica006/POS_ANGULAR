@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using POS.Application.Commons.Bases.Request;
 using POS.Application.Commons.Bases.Response;
 using POS.Application.Commons.Ordering;
-using POS.Application.Dtos.Category.Response;
 using POS.Application.Dtos.Warehouse.Request;
 using POS.Application.Dtos.Warehouse.Response;
 using POS.Application.Interfaces;
@@ -140,6 +139,53 @@ namespace POS.Application.Services
                 await _unitOfWork.ProductStock.RegisterProductstock(newProductStock);
             }
 
+        }
+
+        public async Task<BaseResponse<bool>> EditWarehouse(int warehouseId, WarehouseRequestDto requestDto)
+        {
+            var response = new BaseResponse<bool>();
+
+            try
+            {
+                var warehouse = _mapper.Map<Warehouse>(warehouseId);
+                warehouse.Id = warehouseId;
+
+                response.Data = await _unitOfWork.Warehouse.EditAsync(warehouse);
+                response.IsSuccess= true;
+                response.Message = ReplyMessage.MESSAGE_UPDATE;
+
+            }
+            catch (Exception ex) {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+
+            }
+            return response;
+        }
+
+        public async Task<BaseResponse<bool>> RemoveWarehouse(int warehouseId)
+        {
+            var response = new BaseResponse<bool>();
+
+            try
+            {
+
+                response.Data = await _unitOfWork.Warehouse.RemoveAsync(warehouseId);
+          
+                response.IsSuccess = true;
+                response.Message = ReplyMessage.MESSAGE_DELETE;
+
+
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ReplyMessage.MESSAGE_EXCEPTION;
+                WatchLogger.Log(ex.Message);
+
+            }
+            return response;
         }
     }
 }

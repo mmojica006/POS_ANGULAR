@@ -10,5 +10,7 @@ namespace POS.Application.Interfaces
         Task<BaseResponse<IEnumerable<WarehouseResponseDto>>> ListWarehouses(BaseFilterRequest filters);
         Task<BaseResponse<WarehouseByIdResponseDto>> WarehousesById(int warehouseId);
         Task<BaseResponse<bool>> Registerwarehouse(WarehouseRequestDto requestDto);
+        Task<BaseResponse<bool>> EditWarehouse(int warehouseId, WarehouseRequestDto requestDto);
+        Task<BaseResponse<bool>> RemoveWarehouse(int warehouseId);
     }
 }
