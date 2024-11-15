@@ -22,6 +22,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//proporcionar acceso al contexto http en cualquier parte de la aplicación para la carga de archivo
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: Cors, builder =>
